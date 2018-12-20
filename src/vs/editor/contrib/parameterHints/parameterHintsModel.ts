@@ -96,7 +96,8 @@ export class ParameterHintsModel extends Disposable {
 			() => this.doTrigger({
 				triggerKind: context.triggerKind,
 				triggerCharacter: context.triggerCharacter,
-				isRetrigger: this.state.state === 'active' || this.state.state === 'pending',
+				isRetrigger: this.state.state === 'active',
+				activeSignatureHelp: this.state.state === 'active' ? this.state.hints : undefined
 			}, triggerId), delay).then(undefined, onUnexpectedError);
 	}
 
@@ -143,10 +144,7 @@ export class ParameterHintsModel extends Disposable {
 			return;
 		}
 
-		this.state = {
-			state: 'active',
-			hints: { ...this.state.hints, activeSignature }
-		};
+		this.state = new ActiveState({ ...this.state.hints, activeSignature });
 		this._onChangedHints.fire(this.state.hints);
 	}
 
